@@ -1,3 +1,4 @@
+require("dotenv").config();
 var express = require("express");
 var logger = require("morgan");
 var mongoose = require("mongoose");
@@ -11,7 +12,7 @@ var cheerio = require("cheerio");
 // Require all models
 var db = require("./models");
 
-var PORT = 3000;
+var PORT = process.env.PORT || 3000;
 
 // Initialize Express
 var app = express();
@@ -21,15 +22,28 @@ var app = express();
 // Use morgan logger for logging requests
 app.use(logger("dev"));
 // Parse request body as JSON
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 // Make public a static folder
 app.use(express.static("public"));
 
+
+
+
+
 // Connect to the Mongo DB
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+
+
+
+// Connect to Remote DB???? NODE_ENV?
+// var MONGODB_URI = process.env.MONGODB_URI || 
+// "mongodb://<dbuser>:<dbpassword>@ds353457.mlab.com:53457/heroku_7p848dk0";
+// mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+
+
+
 
 
 
@@ -50,15 +64,15 @@ app.get("/scrape", function (req, res) {
 
 
       // Add the text and href of every link, and save them as properties of the result object
-      // result.title = $(".headline")
-      //   .children("a")
-      //   .text();
-      // result.link = $(".headline")
-      //   .children("a")
-      //   .attr("href");
-      // result.summary = $(this)
-      //   .children(".media-body", ".article-info-extended", ".summary")
-      //   .text();
+      result.title = $(".headline")
+        .children("a")
+        .text();
+      result.link = $(".headline")
+        .children("a")
+        .attr("href");
+      result.summary = $(this)
+        .children(".media-body", ".article-info-extended", ".summary")
+        .text();
 
 
       // ------------------------------------------------------------------------------------------------------------------------------
